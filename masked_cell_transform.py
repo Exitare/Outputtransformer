@@ -5,8 +5,8 @@ from typing import List
 from tqdm import tqdm
 
 
-def missing_elements(data: List):
-    return sorted(set(range(1, 801)).difference(data))
+def missing_elements(data: List, image_count: int):
+    return sorted(set(range(1, image_count + 1)).difference(data))
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -25,6 +25,7 @@ columns.extend([f"Object Number {i + 1}" for i in range(data["ObjectNumber"].max
 converted_data = pd.DataFrame(columns=columns)
 converted_data["ImageNumber"] = data["ImageNumber"].unique()
 
+image_count: int = len(data["ImageNumber"].unique())
 for column in tqdm(converted_data.columns):
     if column == "ImageNumber":
         continue
@@ -33,7 +34,7 @@ for column in tqdm(converted_data.columns):
     temp = data[data["ObjectNumber"] == number]
 
     if len(temp) < 800:
-        missing_image_ids = missing_elements(temp["ImageNumber"].tolist())
+        missing_image_ids = missing_elements(temp["ImageNumber"].tolist(), image_count=image_count)
         temp = temp["Intensity_IntegratedIntensity_Fluo4"]
         temp = temp.tolist()
 
